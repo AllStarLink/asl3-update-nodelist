@@ -80,4 +80,10 @@ case $diff_type in
 esac
 
 rm $EXTNODESTMP
+
+if [ ${USER} != "asterisk" ]; then
+	chown asterisk:astersk ${EXTNODES} ${HASH_FILE}
+	chmod 644 ${EXTNODES} ${HASH_FILE}
+fi
+
 exit $RETVAL
