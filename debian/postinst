@@ -34,6 +34,11 @@ do_configure() {
 		fi
 	done
 
+	if [ ! -d /var/lib/asterisk ]; then
+		mkdir /var/lib/asterisk
+		chown asterisk:asterisk /var/lib/asterisk
+	fi
+
 	# install systemd timer
 	deb-systemd-invoke enable asl3-update-nodelist.timer
 }
