@@ -1,0 +1,83 @@
+#!/bin/bash
+#
+# AllStarLink extnodes generator
+#
+# Copyright (C) 2018-2024, AllStarLink, Inc.
+#
+# Written by:
+# Tim Sawyer, WD6AWP
+# Rob Vella, KK9ROB (send patch diff instead of full file)
+# Steve N4IRS
+# Jason McCormick, N8EI (modernization for systemd, packaging)
+#
+# See http://allstarlink.org for more information about
+# this project. Please do not directly contact
+# any of the maintainers of this project for assistance;
+# the project provides a web site, and mailing lists
+# for your use.
+#
+# This program is free software, distributed under the terms of
+# the GNU General Public License Version 3. See the LICENSE file
+# at the top of the source tree.
+
+NODE_DB_HOST=snodes.allstarlink.org
+URI="diffnodes.php"
+NODE_URL="http://${NODE_DB_HOST}/${URI}"
+USERAGENT="asl3-update-nodelist/1.0"
+
+FILEPATH=/var/lib/asterisk
+EXTNODES=$FILEPATH/rpt_extnodes
+EXTNODESTMP=$(mktemp)
+HASH_FILE="${FILEPATH}/asl3un-hash"
+
+getLastHash() {
+	last_hash=$(head -n1 ${HASH_FILE})
+}
+
+writeHash() {
+	curr_hash=$(grep SHA1 $EXTNODESTMP | cut -d "=" -f 2 | tail -n 1)
+	echo "${curr_hash}" > $HASH_FILE
+}
+
+
+# See if this is a full or differential
+[ ! -f $HASH_FILE ] && touch $HASH_FILE
+QS=""
+getLastHash
+[ "${last_hash}" != '' ] && QS="?hash=${last_hash}"
+
+wget --user-agent="$USERAGENT" -q -O $EXTNODESTMP "${NODE_URL}${QS}"
+if [ $? -ne 0 ]; then
+	echo "failed to download from ${NODE_URL}"
+	exit 1
+fi
+
+RETVAL=0
+diff_type=$(head -n1 ${EXTNODESTMP} | sed -e 's/^;//g')
+case $diff_type in
+	Full)
+		# Does app_rpt need the file not to change?
+		cat ${EXTNODESTMP} > ${EXTNODES}
+		writeHash
+	;;
+
+	Empty)
+	;;
+
+	Diff)
+		NEW_FILE=$(mktemp)
+		cp ${EXTNODES} ${NEW_FILE}
+		patch -t -s ${NEW_FILE} ${EXTNODESTMP}
+		if [ $? -eq 0 ]; then
+			# Does app_rpt need the file not to change?
+			cat ${NEW_FILE} > ${EXTNODES}
+			writeHash
+		else
+			REVAL=1
+		fi
+		rm $NEW_FILE
+	;;
+esac
+
+rm $EXTNODESTMP
+exit $RETVAL

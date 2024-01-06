@@ -1,0 +1,16 @@
+Source: asl3-update-nodelist
+Section: Radio
+Priority: optional
+Maintainer: Jason McCormick <jason@mfamily.org>
+Build-Depends: debhelper-compat (= 13), pandoc
+Standards-Version: 4.5.1
+Homepage: https://github.com/AllStarLink/asl3-update-nodelist
+Vcs-Browser: https://github.com/AllStarLink/asl3-update-nodelist
+Vcs-Git: https://github.com/AllStarLink/asl3-update-nodelist
+Rules-Requires-Root: binary-targets
+
+Package: asl3-update-nodelist
+Architecture: all
+Depends: ${misc:Depends}, patch, asl3-asterisk
+Description: Maintain the ASL node database file
+  in /var/lib/asterisk/rpt_extnodes

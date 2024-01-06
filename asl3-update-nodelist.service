@@ -1,0 +1,8 @@
+[Unit]
+Description=Update ASL3 on-disk nodelist db
+
+[Service]
+Type=oneshot
+User=asterisk
+Group=asterisk
+ExecStart=/usr/bin/asl3-update-nodelist

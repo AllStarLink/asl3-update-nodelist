@@ -1,0 +1,10 @@
+[Unit]
+Description=asl3-update-nodelist runs every 60 seconds
+
+[Timer]
+OnBootSec=60s
+OnUnitInactiveSec=60s
+
+[Install]
+WantedBy=timers.target
+
