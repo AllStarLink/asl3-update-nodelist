@@ -3,8 +3,8 @@
 #
 SRCNAME = asl3-update-nodelist
 PKGNAME = $(SRCNAME)
-RELVER = 1.0
-DEBVER = 5
+RELVER = 1.1
+DEBVER = 1
 
 #
 # Other variables
@@ -73,5 +73,6 @@ debclean:
 	rm -f debian/*.substvars
 	rm -rf debian/$(SRCNAME)/ debian/.debhelper/
 	rm -f debian/debhelper-build-stamp debian/files debian/$(SRCNAME).substvars
+	rm -f debian/*.debhelper
 
 	
