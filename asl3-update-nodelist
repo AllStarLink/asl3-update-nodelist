@@ -82,7 +82,7 @@ esac
 rm $EXTNODESTMP
 
 if [ ${USER} != "asterisk" ]; then
-	chown asterisk:astersk ${EXTNODES} ${HASH_FILE}
+	chown asterisk:asterisk ${EXTNODES} ${HASH_FILE}
 	chmod 644 ${EXTNODES} ${HASH_FILE}
 fi
 
