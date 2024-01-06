@@ -4,7 +4,7 @@
 SRCNAME = asl3-update-nodelist
 PKGNAME = $(SRCNAME)
 RELVER = 1.1
-DEBVER = 1
+DEBVER = 2
 
 #
 # Other variables
