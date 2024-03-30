@@ -4,7 +4,8 @@
 SRCNAME = asl3-update-nodelist
 PKGNAME = $(SRCNAME)
 RELVER = 1.2
-DEBVER = 1
+DEBVER = 2
+RELPLAT ?= deb$(shell lsb_release -rs 2> /dev/null)
 
 #
 # Other variables
@@ -47,7 +48,11 @@ $(DESTDIR)$(mandir)/man1/%: %.md
 
 
 deb:	debclean debprep
-	debuild
+	debchange --distribution stable --package $(PKGNAME) \
+		--newversion $(EPOCHVER)$(RELVER)-$(DEBVER).$(RELPLAT) \
+		"Autobuild of $(EPOCHVER)$(RELVER)-$(DEBVER) for $(RELPLAT)"
+	dpkg-buildpackage -b --no-sign
+	git checkout debian/changelog
 
 debchange:
 	debchange -v $(RELVER)-$(DEBVER)
