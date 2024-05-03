@@ -31,9 +31,9 @@ jobs:
         arch: ${{ inputs.arch == 'armhf' && 'arm64' || inputs.arch == 'aarch64' && 'arm64' || inputs.arch == 'amd64' && 'x86_64' || inputs.arch == 'riscv64' && 'x86_64' || inputs.arch }}
 		artifact-path: '_debs/*'
       secrets: inherit
-  publish-packages:
-    uses: AllStarLink/asl3-update-nodelist/.github/workflows/publish_artifacts_to_aptly.yml@develop
-    with:
-      repo-name: asl3-${{ inputs.aptly-repo }}
-    secrets: inherit
-    needs: make-packages
+#  publish-packages:
+#    uses: AllStarLink/asl3-update-nodelist/.github/workflows/publish_artifacts_to_aptly.yml@develop
+#    with:
+#      repo-name: asl3-${{ inputs.aptly-repo }}
+#    secrets: inherit
+#    needs: make-packages
