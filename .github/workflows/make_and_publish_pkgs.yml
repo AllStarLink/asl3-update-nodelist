@@ -33,7 +33,7 @@ jobs:
       artifact-path: '_debs/*'
     secrets: inherit
   publish-packages:
-    uses: AllStarLink/asl3-asterisk/.github/workflows/publish_artifacts_to_aptly.yml@develop
+    uses: AllStarLink/asl3-update-nodelist/.github/workflows/publish_artifacts_to_aptly.yml@develop
     with:
       repo-name: asl3-${{ inputs.aptly-repo }}
     secrets: inherit
