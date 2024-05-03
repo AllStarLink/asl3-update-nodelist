@@ -1,3 +1,4 @@
+---
 name: make_and_publish_pkgs
 run-name: Package ${{ github.event.repository.name }}(${{ github.ref_name }}) for ${{ inputs.os }}/${{ inputs.arch }}, Publish to ${{ inputs.deployment-environment }}
 on: 
@@ -15,13 +16,13 @@ on:
         description: 'Aptly Repository Stream'
         type: choice
         options:
-        - beta
-        - devel
+          - beta
+          - devel
       arch:
         description: 'Platform Architecture (Do not change)'
         type: choice
         options:
-        - amd64
+          - amd64
 
 
 jobs:
