@@ -24,6 +24,8 @@ jobs:
       - name: Upload to aptly
         run: find $RUNNER_TEMP/artifacts/ -name "*.deb" | xargs -I {} -d '\n' curl --fail --user ${{secrets.APTLY_API_USER}}:${{secrets.APTLY_API_PASS}} -X POST -F 'file=@"{}"' https://repo.allstarlink.org/api/files/${{inputs.repo-name}}-${{inputs.os}}
       - name: Add files to repository
-        run: curl --fail --user ${{secrets.APTLY_API_USER}}:${{secrets.APTLY_API_PASS}} -X POST https://repo.allstarlink.org/api/repos/${{inputs.repo-name}}/file/${{inputs.repo-name}}-${{inputs.os}}
+        run: |
+            curl --fail --user ${{secrets.APTLY_API_USER}}:${{secrets.APTLY_API_PASS}} -X POST https://repo.allstarlink.org/api/repos/${{inputs.repo-name}}/file/${{inputs.repo-name}}-${{inputs.os}}
       - name: Publish repository
-        run: curl --fail --user ${{secrets.APTLY_API_USER}}:${{secrets.APTLY_API_PASS}} -X PUT -H "content-Type: application/json" --data '{"Signing": {"Batch": true, "Passphrase": "${{secrets.APTLY_GPG_PASSPHRASE}}"}}' "https://repo.allstarlink.org/api/publish/:./${{inputs.os}}"
+        run: |
+          curl --fail --user ${{secrets.APTLY_API_USER}}:${{secrets.APTLY_API_PASS}} -X PUT -H "content-Type: application/json" --data '{"Signing": {"Batch": true, "Passphrase": "${{secrets.APTLY_GPG_PASSPHRASE}}"}}' "https://repo.allstarlink.org/api/publish/:./${{inputs.os}}"
