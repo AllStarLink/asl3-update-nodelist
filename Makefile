@@ -4,7 +4,7 @@
 SRCNAME = asl3-update-nodelist
 PKGNAME = $(SRCNAME)
 RELVER = 1.2
-DEBVER = 2
+DEBVER = 4
 RELPLAT ?= deb$(shell lsb_release -rs 2> /dev/null)
 
 #
