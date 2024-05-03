@@ -1,28 +1,28 @@
 name: Make and Publish Pkgs
 run-name: Package ${{ github.event.repository.name }}(${{ github.ref_name }}) for ${{ inputs.os }}/${{ inputs.arch }}, Publish to ${{ inputs.deployment-environment }}
-on: 
-  workflow_dispatch:
-    inputs:
-      os:
-        description: 'Debian Release Version'
-        type: choice
-        options:
-          - bookworm
-          - bullseye
-      gh-rel:
-        description: 'GitHub Release Tag (for debs)'
-        type: string
-      aptly-repo:
-        description: 'Aptly Repository Stream'
-        type: choice
-        options:
-          - beta
-          - devel
-      arch:
-        description: 'Platform Architecture (Do not change)'
-        type: choice
-        options:
-          - amd64
+#on: 
+#  workflow_dispatch:
+#    inputs:
+#      os:
+#        description: 'Debian Release Version'
+#        type: choice
+#        options:
+#          - bookworm
+#          - bullseye
+#      gh-rel:
+#        description: 'GitHub Release Tag (for debs)'
+#        type: string
+#      aptly-repo:
+#        description: 'Aptly Repository Stream'
+#        type: choice
+#        options:
+#          - beta
+#          - devel
+#      arch:
+#        description: 'Platform Architecture (Do not change)'
+#        type: choice
+#        options:
+#          - amd64
 #jobs:
 #  make-packages:
 #    uses: AllStarLink/asl3-update-nodelist/.github/workflows/ephemeral_ec2_run-this.yml@develop
