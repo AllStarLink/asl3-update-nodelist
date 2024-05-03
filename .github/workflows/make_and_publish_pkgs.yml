@@ -1,4 +1,3 @@
----
 name: Make and Publish Pkgs
 run-name: Package ${{ github.event.repository.name }}(${{ github.ref_name }}) for ${{ inputs.os }}/${{ inputs.arch }}, Publish to ${{ inputs.deployment-environment }}
 on: 
