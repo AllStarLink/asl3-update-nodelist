@@ -1,5 +1,6 @@
 [Unit]
 Description=Update ASL3 on-disk nodelist db
+After=network.target
 
 [Service]
 Type=oneshot
