@@ -1,5 +1,6 @@
 [Unit]
 Description=asl3-update-nodelist runs every 60 seconds
+Requires=asl3-update-nodelist.service
 
 [Timer]
 OnBootSec=60s

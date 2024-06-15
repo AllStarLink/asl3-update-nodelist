@@ -1,9 +1,13 @@
 [Unit]
 Description=Update ASL3 on-disk nodelist db
-After=network.target
+Wants=network-online.target
+After=network-online.target
 
 [Service]
 Type=oneshot
 User=asterisk
 Group=asterisk
 ExecStart=/usr/bin/asl3-update-nodelist
+
+[Install]
+WantedBy=multi-user.target
