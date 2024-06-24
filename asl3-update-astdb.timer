@@ -5,6 +5,7 @@ Requires=asl3-update-astdb.service
 [Timer]
 OnBootSec=60s
 OnUnitInactiveSec=6h
+RandomizedDelaySec=300
 
 [Install]
 WantedBy=timers.target
