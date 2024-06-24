@@ -1,0 +1,13 @@
+[Unit]
+Description=Update ASL3 astdb.txt
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/usr/bin/asl3-update-astdb
+
+[Install]
+WantedBy=multi-user.target
