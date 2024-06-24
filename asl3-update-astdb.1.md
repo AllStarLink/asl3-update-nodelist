@@ -7,16 +7,20 @@ asl3-update-astdb - Creates (or updates) the AllStarLink node information databa
 Usage: asl3-update-astdb 
 
 # DESCRIPTION
-The **asl3-update-astdb** command downloads the AllStarLink node information database file to `/var/lib/asterisk/astdb.txt`.
+The **asl3-update-astdb** command downloads the AllStarLink node information
+database file to `/var/lib/asterisk/astdb.txt`.
 
-The database is used by some web applications to provide additional information about connected nodes.
-The database includes the callsign, frequency, and location for each registered node.
+The database is used by some web applications to provide additional
+information about connected nodes. The database includes the callsign,
+frequency, and location for each registered node.
 
-The command is normally executed using the systemd asl3-update-astdb.service and asl3-update-astdb.timer.
-The command can be run by hand but only as the "root" user.
+The command is normally executed using the systemd asl3-update-astdb.service
+and asl3-update-astdb.timer. The command can be run by hand but only
+as the "root" user.
 
-NOTE: by default, both the service and timer are disabled.  If you are installing one of the web applications that uses the "astdb.txt" file then you will want to enable (and start) them using :
-
+NOTE: by default, both the service and timer are disabled.  If you are
+installing one of the web applications that uses the "astdb.txt" file
+then you will want to enable (and start) them using:
 ```bash
 systemctl enable asl3-update-astdb.service
 systemctl enable asl3-update-astdb.timer
