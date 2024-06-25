@@ -3,7 +3,7 @@
 % January 2024
 
 # NAME
-asl3-update-nodelist - Connect to an ASL Asterisk server and issue commands
+asl3-update-nodelist - Creates (or updates) the AllStarLink node connection database 
 
 # SYNOPSIS
 usage: asl3-update-nodelist 
@@ -11,10 +11,10 @@ usage: asl3-update-nodelist
 # DESCRIPTION
 **asl3-update-nodelist** downloads the AllStarLink node database file
 to `/var/lib/asterisk/rpt_extnodes` using the full/diff/empty
-stragety offered by `https://snodes.allstarlink.org/diffnodes.php`.
+strategy offered by `https://snodes.allstarlink.org/diffnodes.php`.
 
-It is normally executied using asl3-update-nodelist.timer
-from sysytemd. It can be run by hand but only as the asterisk
+The command is normally executed using asl3-update-nodelist.timer
+from systemd. It can be run by hand but only as the asterisk
 user or else problems will occur!!
 
 # BUGS
