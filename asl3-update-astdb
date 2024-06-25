@@ -41,6 +41,7 @@ function cleanup_files(){
 function install_files(){
 	mv ${TMP_FILE} ${DB_FILE}
 	chown -R asterisk:asterisk ${DB_FILE}
+	chmod 644 ${DB_FILE}
 	for DIR in /var/log/asterisk /var/www/html/supermon /var/www/html/allscan; do
 		if [ -d ${DIR} ]; then
 			rm -f ${DIR}/astdb.txt
