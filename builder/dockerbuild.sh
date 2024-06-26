@@ -21,7 +21,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
 	-r)
-      APTLY_REPO="asl-$2"
+      APTLY_REPO="asl3-$2"
       shift
       shift	
       ;;
