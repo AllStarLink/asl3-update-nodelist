@@ -100,7 +100,7 @@ APTLY_USER="${APTLY_API_USER}:${APTLY_API_PASS}"
 find $ALL_PKG_ROOT/_debs/*.deb -name "*.deb" | \
 	xargs -I {} -d '\n' curl --fail --user ${APTLY_USER} \
 	-X POST -F 'file=@"{}"' \
-	 https://repo-admin.allstarlink.org/api/files/${APTLY_REPO}-{$OPERATING_SYSTEMS}
+	 https://repo-admin.allstarlink.org/api/files/${APTLY_REPO}-${OPERATING_SYSTEMS}
 
 curl --fail --user ${APTLY_USER} -X POST \
 	https://repo-admin.allstarlink.org/api/repos/${APTLY_REPO}/file/${APTLY_REPO}-${OPERATING_SYSTEMS}
