@@ -97,7 +97,7 @@ docker image rm --force $D_TAG
 
 APTLY_USER="${APTLY_API_USER}:${APTLY_API_PASS}"
 
-find $GH_REL $ALL_PKG_ROOT/_debs/*.deb -name "*.deb" | \
+find $ALL_PKG_ROOT/_debs/*.deb -name "*.deb" | \
 	xargs -I {} -d '\n' curl --fail --user ${APTLY_USER} \
 	-X POST -F 'file=@"{}"' \
 	 https://repo-admin.allstarlink.org/api/files/${APTLY_REPO}-{$OPERATING_SYSTEMS}
