@@ -26,9 +26,10 @@ NODE_URL="http://${NODE_DB_HOST}/${URI}"
 USERAGENT="asl3-update-nodelist/1.0"
 
 FILEPATH=/var/lib/asterisk
-EXTNODES=$FILEPATH/rpt_extnodes
+NODELIST=rpt_extnodes
+EXTNODES=$FILEPATH/$NODELIST
 EXTNODESTMP=$(mktemp)
-HASH_FILE=${FILEPATH}/asl3un-hash
+HASH_FILE=$FILEPATH/asl3un-hash
 
 getLastHash() {
 	last_hash=$(head -n1 ${HASH_FILE})
@@ -40,6 +41,7 @@ writeHash() {
 }
 
 downloadNodelist() {
+	echo "downloading \"${NODE_URL}${1}\""
 	wget --user-agent="$USERAGENT" -q -O $EXTNODESTMP "${NODE_URL}${1}"
 	if [ $? -ne 0 ]; then
 		echo "failed to download from ${NODE_URL}"
@@ -49,9 +51,10 @@ downloadNodelist() {
 }
 
 writeNodelist() {
-	# Does app_rpt need the file not to change?
+	# Q? does app_rpt need the file not to change?
 	cat ${1} > ${EXTNODES}
 	writeHash
+	echo "${NODELIST} updated"
 }
 
 # See if this is a full or differential
@@ -68,12 +71,14 @@ case $diff_type in
 	Full)
 		# Does app_rpt need the file not to change?
 		writeNodelist ${EXTNODESTMP}
-	;;
+		;;
 
 	Empty)
-	;;
+		echo "${NODELIST} unchanged"
+		;;
 
 	Diff)
+		echo "applying patch"
 		NEW_FILE=$(mktemp)
 		cp ${EXTNODES} ${NEW_FILE}
 		patch -t -s -r 1 ${NEW_FILE} ${EXTNODESTMP}
@@ -87,7 +92,7 @@ case $diff_type in
 			writeNodelist ${EXTNODESTMP}
 		fi
 		rm $NEW_FILE
-	;;
+		;;
 esac
 
 rm $EXTNODESTMP
