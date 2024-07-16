@@ -81,7 +81,7 @@ case $diff_type in
 		echo "applying patch"
 		NEW_FILE=$(mktemp)
 		cp ${EXTNODES} ${NEW_FILE}
-		patch -t -s -r 1 ${NEW_FILE} ${EXTNODESTMP}
+		patch --no-backup-if-mismatch -t -s -r 1 ${NEW_FILE} ${EXTNODESTMP}
 		if [ $? -eq 0 ]; then
 			# if all hunks applied successfully
 			writeNodelist ${NEW_FILE}
