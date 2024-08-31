@@ -37,7 +37,7 @@ getLastHash() {
 
 writeHash() {
 	curr_hash=$(grep SHA1 $EXTNODES | cut -d "=" -f 2 | tail -n 1)
-	#echo "${curr_hash}" > $HASH_FILE
+	echo "${curr_hash}" > $HASH_FILE
 }
 
 downloadNodelist() {
