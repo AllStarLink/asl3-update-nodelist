@@ -41,7 +41,7 @@ writeHash() {
 }
 
 downloadNodelist() {
-	echo "downloading \"${NODE_URL}${1}\""
+	#echo "downloading \"${NODE_URL}${1}\""
 	wget --user-agent="$USERAGENT" -q -O $EXTNODESTMP "${NODE_URL}${1}"
 	if [ $? -ne 0 ]; then
 		echo "failed to download from ${NODE_URL}"
@@ -54,7 +54,7 @@ writeNodelist() {
 	# Q? does app_rpt need the file not to change?
 	cat ${1} > ${EXTNODES}
 	writeHash
-	echo "${NODELIST} updated"
+	#echo "${NODELIST} updated"
 }
 
 # See if this is a full or differential
@@ -74,11 +74,11 @@ case $diff_type in
 		;;
 
 	Empty)
-		echo "${NODELIST} unchanged"
+		#echo "${NODELIST} unchanged"
 		;;
 
 	Diff)
-		echo "applying patch"
+		#echo "applying patch"
 		NEW_FILE=$(mktemp)
 		cp ${EXTNODES} ${NEW_FILE}
 		patch --no-backup-if-mismatch -t -s -r 1 ${NEW_FILE} ${EXTNODESTMP}
