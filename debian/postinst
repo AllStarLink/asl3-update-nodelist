@@ -39,8 +39,6 @@ do_configure() {
 		chown asterisk:asterisk /var/lib/asterisk
 	fi
 
-	# install systemd timer (update nodelist)
-	deb-systemd-invoke enable asl3-update-nodelist.timer
 }
 
 case "$1" in
