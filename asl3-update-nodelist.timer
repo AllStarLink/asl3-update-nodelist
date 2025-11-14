@@ -1,10 +1,11 @@
 [Unit]
-Description=asl3-update-nodelist runs every 60 seconds
+Description=asl3-update-nodelist runs every 180 seconds
 Requires=asl3-update-nodelist.service
 
 [Timer]
 OnBootSec=60s
-OnUnitInactiveSec=60s
+OnUnitInactiveSec=180
+RandomizedDelaySec=120
 
 [Install]
 WantedBy=timers.target
