@@ -1,6 +1,6 @@
 % asl3-update-nodelist(1) asl3-update-nodelist 1.0
 % Jason McCormick
-% January 2024
+% November 2025
 
 # NAME
 asl3-update-nodelist - Creates (or updates) the AllStarLink node connection database 
@@ -12,7 +12,7 @@ usage: asl3-update-nodelist
 **asl3-update-nodelist** downloads the AllStarLink node database file
 to `/var/lib/asterisk/rpt_extnodes` using the full/diff/empty
 strategy offered by `https://snodes.allstarlink.org/diffnodes.php`.
-It will only act if node\_lookup\_method=dns is set in
+It will only act if node\_lookup\_method is not "dns" in
 /etc/asterisk/rpt.conf. Otherwise it will exit without error.
 
 The command is normally executed using asl3-update-nodelist.timer
