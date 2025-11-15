@@ -57,6 +57,14 @@ writeNodelist() {
 	#echo "${NODELIST} updated"
 }
 
+# Check to see if this host is even using me
+LUT=$( grep -iE '^node_lookup_method' /etc/asterisk/rpt.conf | \
+	perl -pe 's/^node_lookup_method\s?=\s?(\S+).*$/$1/gi' | tr '[A-Z]' '[a-z]')
+if [ "x${LUT}" = "xdns" ]; then
+	echo "node_lookup_method = dns; skipping"
+	exit 0
+fi
+
 # See if this is a full or differential
 [ ! -f $HASH_FILE ] && touch $HASH_FILE
 QS=""
