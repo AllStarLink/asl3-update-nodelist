@@ -1,3 +1,11 @@
+asl3-update-nodelist (2.0.0-1) stable; urgency=medium
+
+  * asl3-update-nodelist(1) will not do anything if 
+    node lookups are configured exclusively for DNS
+  * Timer is no longer enabled on install
+
+ -- Jason McCormick <jason@mfamily.org>  Fri, 14 Nov 2025 20:46:12 -0500
+
 asl3-update-nodelist (1.5.1-1) stable; urgency=medium
 
   * Remove unneded logging to reduce chatter in the journal
