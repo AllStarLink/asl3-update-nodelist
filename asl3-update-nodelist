@@ -28,7 +28,6 @@ USERAGENT="asl3-update-nodelist/1.0"
 FILEPATH=/var/lib/asterisk
 NODELIST=rpt_extnodes
 EXTNODES=$FILEPATH/$NODELIST
-EXTNODESTMP=$(mktemp)
 HASH_FILE=$FILEPATH/asl3un-hash
 
 getLastHash() {
@@ -72,6 +71,7 @@ getLastHash
 [ "${last_hash}" != '' ] && QS="?hash=${last_hash}"
 
 # Download the Nodelist
+EXTNODESTMP=$(mktemp)
 downloadNodelist "${QS}"
 
 diff_type=$(head -n1 ${EXTNODESTMP} | sed -e 's/^;//g')
