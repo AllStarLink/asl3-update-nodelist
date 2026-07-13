@@ -5,8 +5,29 @@ and conflicts with, the asl-update-node-list package for
 ASL2. Use one or the other, but not both.
 
 On installation of the package, the `asl3-update-nodelist.timer`
-is enabled and will update the database one every 60 seconds
-using the full/differential method.
+is not enabled automatically. When enabled, it updates the database
+every 180 seconds using the full/differential method.
+
+### node_lookup_method behavior
+
+The updater reads `node_lookup_method` from `/etc/asterisk/rpt.conf`
+and adjusts its behavior accordingly:
+
+| Method | Behavior |
+|--------|----------|
+| `dns` | Skips updates; `rpt_extnodes` is not consulted by app_rpt |
+| `file` | Updates on every timer run |
+| `both` | Skips updates when DNS is healthy and `rpt_extnodes` was refreshed within the last 24 hours; updates when DNS is unavailable or the file is older than 24 hours |
+
+The throttle interval can be overridden with `ASL3UN_BOTH_INTERVAL`
+(see `asl3-update-nodelist(1)`).
+
+To enable the nodelist updater:
+
+```bash
+systemctl enable asl3-update-nodelist.timer
+systemctl start asl3-update-nodelist.timer
+```
 
 ## Resetting Database State
 To reset after a suspected database corruption:
