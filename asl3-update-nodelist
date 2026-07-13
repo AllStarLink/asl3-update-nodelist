@@ -30,6 +30,11 @@ NODELIST=rpt_extnodes
 EXTNODES=$FILEPATH/$NODELIST
 HASH_FILE=$FILEPATH/asl3un-hash
 
+# both-mode throttle: rpt_extnodes is DNS failover only (see issue #11)
+BOTH_UPDATE_INTERVAL=${ASL3UN_BOTH_INTERVAL:-86400}
+DNS_PROBE_NODE=${ASL3UN_DNS_PROBE_NODE:-2000}
+DEFAULT_DNS_NODE_DOMAIN=nodes.allstarlink.org
+
 getLastHash() {
 	last_hash=$(head -n1 ${HASH_FILE})
 }
@@ -56,11 +61,51 @@ writeNodelist() {
 	#echo "${NODELIST} updated"
 }
 
+dnsProbe() {
+	local domain probe dom
+
+	if [ -r /etc/asterisk/rpt.conf ]; then
+		dom=$(grep -iE '^dns_node_domain' /etc/asterisk/rpt.conf | \
+			perl -pe 's/^dns_node_domain\s?=\s?(\S+).*$/$1/gi' | \
+			tr '[:upper:]' '[:lower:]' | head -n1)
+	fi
+	domain=${dom:-${DEFAULT_DNS_NODE_DOMAIN}}
+	probe="_iax._udp.${DNS_PROBE_NODE}.${domain}"
+	host -t SRV "${probe}" >/dev/null 2>&1
+}
+
+# Return 0 when a both-mode update should be skipped.
+shouldThrottleBothMode() {
+	local now file_mtime file_age
+
+	if [ ! -s "${EXTNODES}" ]; then
+		return 1
+	fi
+
+	now=$(date +%s)
+	file_mtime=$(stat -c %Y "${EXTNODES}" 2>/dev/null || echo 0)
+	file_age=$(( now - file_mtime ))
+	if [ "${file_age}" -ge "${BOTH_UPDATE_INTERVAL}" ]; then
+		return 1
+	fi
+
+	if ! dnsProbe; then
+		return 1
+	fi
+
+	return 0
+}
+
 # Check to see if this host is even using me
 LUT=$( grep -iE '^node_lookup_method' /etc/asterisk/rpt.conf | \
 	perl -pe 's/^node_lookup_method\s?=\s?(\S+).*$/$1/gi' | tr '[A-Z]' '[a-z]')
 if [ "x${LUT}" = "xdns" ]; then
 	echo "node_lookup_method = dns; skipping"
+	exit 0
+fi
+
+if [ "x${LUT}" = "xboth" ] && shouldThrottleBothMode; then
+	echo "node_lookup_method = both; skipping"
 	exit 0
 fi
 
@@ -82,6 +127,7 @@ case $diff_type in
 		;;
 
 	Empty)
+		touch ${EXTNODES}
 		#echo "${NODELIST} unchanged"
 		;;
 
