@@ -14,7 +14,8 @@ to `/var/lib/asterisk/rpt_extnodes` using the full/diff/empty
 strategy offered by `https://snodes.allstarlink.org/diffnodes.php`.
 
 The command reads `node_lookup_method` from `/etc/asterisk/rpt.conf`
-and adjusts its behavior:
+directly (not from `#include` or `#tryinclude` files) and adjusts
+its behavior:
 
 **dns**
 :   Exits without downloading. app_rpt does not consult `rpt_extnodes`.
@@ -29,9 +30,24 @@ and adjusts its behavior:
     is bypassed when the file is missing, older than 24 hours, or DNS
     probing fails.
 
-The throttle interval can be overridden with `ASL3UN_BOTH_INTERVAL`
-(seconds). `ASL3UN_DNS_PROBE_NODE` sets the node number used for DNS
-health checks (default 2000).
+# ENVIRONMENT
+
+**BOTH_UPDATE_INTERVAL**
+:   Seconds between throttled updates in `both` mode (default 86400).
+
+**DNS_PROBE_NODE**
+:   Node number used for DNS health checks (default 2000).
+
+These variables may be set in the service unit environment. Use
+**systemctl edit asl3-update-nodelist.service** to add override lines such as:
+
+```ini
+[Service]
+Environment=BOTH_UPDATE_INTERVAL=43200
+Environment=DNS_PROBE_NODE=2000
+```
+
+Do not edit `/usr/bin/asl3-update-nodelist` to change these values.
 
 The command is normally executed using asl3-update-nodelist.timer
 from systemd. It can be run by hand but only as the asterisk

@@ -19,7 +19,7 @@ and adjusts its behavior accordingly:
 | `file` | Updates on every timer run |
 | `both` | Skips updates when DNS is healthy and `rpt_extnodes` was refreshed within the last 24 hours; updates when DNS is unavailable or the file is older than 24 hours |
 
-The throttle interval can be overridden with `ASL3UN_BOTH_INTERVAL`
+The throttle interval can be overridden with `BOTH_UPDATE_INTERVAL`
 (see `asl3-update-nodelist(1)`).
 
 To enable the nodelist updater:
@@ -28,6 +28,25 @@ To enable the nodelist updater:
 systemctl enable asl3-update-nodelist.timer
 systemctl start asl3-update-nodelist.timer
 ```
+
+## Customizing throttle settings
+
+When `node_lookup_method = both`, override `BOTH_UPDATE_INTERVAL` and
+`DNS_PROBE_NODE` with:
+
+```bash
+systemctl edit asl3-update-nodelist.service
+```
+
+Add lines such as:
+
+```ini
+[Service]
+Environment=BOTH_UPDATE_INTERVAL=43200
+Environment=DNS_PROBE_NODE=2000
+```
+
+Do not edit `/usr/bin/asl3-update-nodelist` to change these values.
 
 ## Resetting Database State
 To reset after a suspected database corruption:
