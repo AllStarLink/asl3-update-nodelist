@@ -31,10 +31,9 @@ EXTNODES=$FILEPATH/$NODELIST
 HASH_FILE=$FILEPATH/asl3un-hash
 
 # both-mode throttle: rpt_extnodes is DNS failover only (see issue #11)
-# BOTH_UPDATE_INTERVAL and DNS_PROBE_NODE may be overridden via
+# BOTH_UPDATE_INTERVAL may be overridden via
 # systemctl edit asl3-update-nodelist.service (see asl3-update-nodelist(1)).
 BOTH_UPDATE_INTERVAL=${BOTH_UPDATE_INTERVAL:-86400}
-DNS_PROBE_NODE=${DNS_PROBE_NODE:-2000}
 DEFAULT_DNS_NODE_DOMAIN=nodes.allstarlink.org
 
 getLastHash() {
@@ -63,8 +62,9 @@ writeNodelist() {
 	#echo "${NODELIST} updated"
 }
 
+# Return 0 when the node DNS domain appears reachable.
 dnsProbe() {
-	local domain probe
+	local domain
 
 	if [ -r /etc/asterisk/rpt.conf ]; then
 		domain=$(grep -iE '^dns_node_domain' /etc/asterisk/rpt.conf | \
@@ -72,8 +72,7 @@ dnsProbe() {
 			tr '[:upper:]' '[:lower:]' | tail -n1)
 	fi
 	domain=${domain:-${DEFAULT_DNS_NODE_DOMAIN}}
-	probe="_iax._udp.${DNS_PROBE_NODE}.${domain}"
-	host -t SRV "${probe}" >/dev/null 2>&1
+	host -t SOA "${domain}" >/dev/null 2>&1
 }
 
 # Return 0 when a both-mode update should be skipped.
@@ -101,7 +100,7 @@ shouldThrottleBothMode() {
 # Check to see if this host is even using me
 # Values are read from /etc/asterisk/rpt.conf directly (not #include files).
 LUT=$( grep -iE '^node_lookup_method' /etc/asterisk/rpt.conf | \
-	perl -pe 's/^node_lookup_method\s?=\s?(\S+).*$/$1/gi' | tr '[A-Z]' '[:lower:]' | tail -n1)
+	perl -pe 's/^node_lookup_method\s?=\s?(\S+).*$/$1/gi' | tr '[:upper:]' '[:lower:]' | tail -n1)
 if [ "x${LUT}" = "xdns" ]; then
 	echo "node_lookup_method = dns; skipping"
 	exit 0
