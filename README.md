@@ -31,8 +31,7 @@ systemctl start asl3-update-nodelist.timer
 
 ## Customizing throttle settings
 
-When `node_lookup_method = both`, override `BOTH_UPDATE_INTERVAL` and
-`DNS_PROBE_NODE` with:
+When `node_lookup_method = both`, override `BOTH_UPDATE_INTERVAL` with:
 
 ```bash
 systemctl edit asl3-update-nodelist.service
@@ -43,10 +42,9 @@ Add lines such as:
 ```ini
 [Service]
 Environment=BOTH_UPDATE_INTERVAL=43200
-Environment=DNS_PROBE_NODE=2000
 ```
 
-Do not edit `/usr/bin/asl3-update-nodelist` to change these values.
+Do not edit `/usr/bin/asl3-update-nodelist` to change this value.
 
 ## Resetting Database State
 To reset after a suspected database corruption:

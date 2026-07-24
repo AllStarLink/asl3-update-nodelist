@@ -34,20 +34,18 @@ its behavior:
 
 **BOTH_UPDATE_INTERVAL**
 :   Seconds between throttled updates in `both` mode (default 86400).
+    DNS health is checked with an SOA query for `dns_node_domain`
+    (or `nodes.allstarlink.org` if unset).
 
-**DNS_PROBE_NODE**
-:   Node number used for DNS health checks (default 2000).
-
-These variables may be set in the service unit environment. Use
+This variable may be set in the service unit environment. Use
 **systemctl edit asl3-update-nodelist.service** to add override lines such as:
 
 ```ini
 [Service]
 Environment=BOTH_UPDATE_INTERVAL=43200
-Environment=DNS_PROBE_NODE=2000
 ```
 
-Do not edit `/usr/bin/asl3-update-nodelist` to change these values.
+Do not edit `/usr/bin/asl3-update-nodelist` to change this value.
 
 The command is normally executed using asl3-update-nodelist.timer
 from systemd. It can be run by hand but only as the asterisk
