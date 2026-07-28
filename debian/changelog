@@ -1,3 +1,9 @@
+asl3-update-nodelist (2.1.0-1) UNRELEASED; urgency=medium
+
+  * Fix mktemp leak when node_lookup_method is dns (#14)
+
+ -- Allan Nathanson <wa3wco@arrl.net>  Tue, 28 Jul 2026 12:42:25 -0400
+
 asl3-update-nodelist (2.0.0-1) stable; urgency=medium
 
   * asl3-update-nodelist(1) will not do anything if 
