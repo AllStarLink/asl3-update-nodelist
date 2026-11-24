@@ -28,7 +28,7 @@ if [ ${EUID} -ne 0 ]; then
 fi
 
 DB_HOST=allmondb.allstarlink.org
-DB_URL="http://${DB_HOST}/"
+DB_URL="https://${DB_HOST}/allmondb.php"
 USERAGENT="asl3-update-astdb/1.0"
 
 PRIV_FILE="/etc/asterisk/privatenodes.txt"
@@ -68,10 +68,11 @@ fi
 
 # Get the file from ASL
 TMP_DL=$(mktemp)
-wget -q -t 5 --user-agent="$USERAGENT" -O ${TMP_DL} "${DB_URL}"
+# --compressed asks for gzip and decompresses it, so the ~1.5 MB database arrives as ~550 KB.
+curl -sS --fail --compressed --location --retry 5 --user-agent "$USERAGENT" -o ${TMP_DL} "${DB_URL}"
 RETVAL=$?
 
-# If wget failed, stop
+# If curl failed, stop
 if [ ${RETVAL} -ne 0 ]; then
 	echo "ERROR: failed to download db file from ${DB_URL}"
 	cleanup_files

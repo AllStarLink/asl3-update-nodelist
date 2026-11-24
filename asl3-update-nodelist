@@ -22,26 +22,26 @@
 
 NODE_DB_HOST=snodes.allstarlink.org
 URI="diffnodes.php"
-NODE_URL="http://${NODE_DB_HOST}/${URI}"
+NODE_URL="https://${NODE_DB_HOST}/${URI}"
 USERAGENT="asl3-update-nodelist/1.0"
 
 FILEPATH=/var/lib/asterisk
 NODELIST=rpt_extnodes
 EXTNODES=$FILEPATH/$NODELIST
-HASH_FILE=$FILEPATH/asl3un-hash
-
-getLastHash() {
-	last_hash=$(head -n1 ${HASH_FILE})
-}
-
-writeHash() {
-	curr_hash=$(grep SHA1 $EXTNODES | cut -d "=" -f 2 | tail -n 1)
-	echo "${curr_hash}" > $HASH_FILE
-}
+# Holds (as its modification time) the server's Last-Modified for the list we have.
+STAMP_FILE=$FILEPATH/asl3un-lastmod
 
 downloadNodelist() {
-	#echo "downloading \"${NODE_URL}${1}\""
-	wget --user-agent="$USERAGENT" -q -O $EXTNODESTMP "${NODE_URL}${1}"
+	#echo "downloading \"${NODE_URL}\""
+	# --compressed: ask for gzip and decompress it (the ~750 KB list arrives as ~190 KB).
+	# -z: send If-Modified-Since from the stamp file, so an unchanged list is a bodiless 304.
+	# -R: give the download the server's Last-Modified, which writeNodelist copies to the stamp
+	# file, so -z compares server time with server time and a wrong local clock doesn't matter.
+	# No stamp yet (a new install, or one upgraded from wget) or no list: download in full.
+	local since=()
+	[ -s "${EXTNODES}" ] && [ -f "${STAMP_FILE}" ] && since=(-z "${STAMP_FILE}")
+	HTTP_CODE=$(curl -sS --fail --compressed --location --retry 3 -R "${since[@]}" \
+		--user-agent "$USERAGENT" -o "$EXTNODESTMP" -w '%{http_code}' "${NODE_URL}")
 	if [ $? -ne 0 ]; then
 		echo "failed to download from ${NODE_URL}"
 		rm -f $EXTNODESTMP
@@ -52,7 +52,8 @@ downloadNodelist() {
 writeNodelist() {
 	# Q? does app_rpt need the file not to change?
 	cat ${1} > ${EXTNODES}
-	writeHash
+	# The server's Last-Modified for this list (curl -R), for the next run's -z.
+	touch -r ${EXTNODESTMP} ${STAMP_FILE}
 	#echo "${NODELIST} updated"
 }
 
@@ -64,50 +65,28 @@ if [ "x${LUT}" = "xdns" ]; then
 	exit 0
 fi
 
-# See if this is a full or differential
-[ ! -f $HASH_FILE ] && touch $HASH_FILE
-QS=""
-getLastHash
-[ "${last_hash}" != '' ] && QS="?hash=${last_hash}"
-
 # Download the Nodelist
 EXTNODESTMP=$(mktemp)
-downloadNodelist "${QS}"
+downloadNodelist
+if [ "${HTTP_CODE}" = "304" ]; then
+	#echo "${NODELIST} unchanged"
+	rm -f $EXTNODESTMP
+	exit 0
+fi
 
-diff_type=$(head -n1 ${EXTNODESTMP} | sed -e 's/^;//g')
-case $diff_type in
-	Full)
-		# Does app_rpt need the file not to change?
-		writeNodelist ${EXTNODESTMP}
-		;;
-
-	Empty)
-		#echo "${NODELIST} unchanged"
-		;;
-
-	Diff)
-		#echo "applying patch"
-		NEW_FILE=$(mktemp)
-		cp ${EXTNODES} ${NEW_FILE}
-		patch --no-backup-if-mismatch -t -s -r 1 ${NEW_FILE} ${EXTNODESTMP}
-		if [ $? -eq 0 ]; then
-			# if all hunks applied successfully
-			writeNodelist ${NEW_FILE}
-		else
-			# if some hunks cannot be applied or there were merge conflicts
-			# or there is more serious trouble, download the "Full" Nodelist
-			downloadNodelist ""
-			writeNodelist ${EXTNODESTMP}
-		fi
-		rm $NEW_FILE
-		;;
-esac
-
+# The server sends the whole list, its first line ";Full". Anything else (an error page from
+# something in the way, say) isn't a node list: keep the one we have.
+if [ "$(head -n1 ${EXTNODESTMP} | tr -d '\r')" != ";Full" ]; then
+	echo "download from ${NODE_URL} is not a node list; keeping ${EXTNODES}"
+	rm -f $EXTNODESTMP
+	exit 1
+fi
+writeNodelist ${EXTNODESTMP}
 rm $EXTNODESTMP
 
 if [ ${USER} != "asterisk" ]; then
-	chown asterisk:asterisk ${EXTNODES} ${HASH_FILE}
-	chmod 644 ${EXTNODES} ${HASH_FILE}
+	chown asterisk:asterisk ${EXTNODES} ${STAMP_FILE}
+	chmod 644 ${EXTNODES} ${STAMP_FILE}
 fi
 
 exit 0
