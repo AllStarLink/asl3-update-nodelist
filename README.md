@@ -5,14 +5,15 @@ and conflicts with, the asl-update-node-list package for
 ASL2. Use one or the other, but not both.
 
 On installation of the package, the `asl3-update-nodelist.timer`
-is enabled and will update the database one every 60 seconds
-using the full/differential method.
+is enabled and will update the database every 3 to 5 minutes.
+Each run downloads the list compressed, and only when it has
+changed since the last download.
 
 ## Resetting Database State
 To reset after a suspected database corruption:
 
 ```bash
-rm -f /var/lib/asterisk/rpt_extnodes /var/lib/asterisk/asl3un-hash
+rm -f /var/lib/asterisk/rpt_extnodes /var/lib/asterisk/asl3un-lastmod
 touch /var/lib/asterisk/rpt_extnodes
 chmod 644 /var/lib/asterisk/rpt_extnodes
 chown asterisk:asterisk /var/lib/asterisk/rpt_extnodes

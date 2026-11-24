@@ -10,8 +10,9 @@ usage: asl3-update-nodelist
 
 # DESCRIPTION
 **asl3-update-nodelist** downloads the AllStarLink node database file
-to `/var/lib/asterisk/rpt_extnodes` using the full/diff/empty
-strategy offered by `https://snodes.allstarlink.org/diffnodes.php`.
+to `/var/lib/asterisk/rpt_extnodes` from
+`https://snodes.allstarlink.org/diffnodes.php`, compressed and only
+when it has changed since the last download.
 It will only act if node\_lookup\_method is not "dns" in
 /etc/asterisk/rpt.conf. Otherwise it will exit without error.
 

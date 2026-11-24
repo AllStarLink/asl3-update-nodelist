@@ -39,6 +39,9 @@ do_configure() {
 		chown asterisk:asterisk /var/lib/asterisk
 	fi
 
+	# Left by versions that asked the server for differences; the list is always sent whole now.
+	rm -f /var/lib/asterisk/asl3un-hash
+
 }
 
 case "$1" in

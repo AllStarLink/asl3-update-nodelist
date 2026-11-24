@@ -11,6 +11,6 @@ Rules-Requires-Root: binary-targets
 
 Package: asl3-update-nodelist
 Architecture: all
-Depends: ${misc:Depends}, patch
+Depends: ${misc:Depends}, curl
 Description: Maintain the ASL node database file
   in /var/lib/asterisk/rpt_extnodes
