@@ -2,3 +2,10 @@
 
 %:
 	dh $@
+
+# Install the nodelist units but leave them off: the timer is only needed with
+# node_lookup_method = file (or both), so admins enable it themselves. Without this,
+# dh_installsystemd enables and starts every unit installed under /lib/systemd/system.
+# Upgrades keep whatever state a node already has.
+override_dh_installsystemd:
+	dh_installsystemd --no-enable --no-start

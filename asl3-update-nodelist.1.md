@@ -17,7 +17,8 @@ It will only act if node\_lookup\_method is not "dns" in
 /etc/asterisk/rpt.conf. Otherwise it will exit without error.
 
 The command is normally executed using asl3-update-nodelist.timer
-from systemd. It can be run by hand but only as the asterisk
+from systemd, which the package installs but does not enable
+(**systemctl enable --now asl3-update-nodelist.timer**). It can be run by hand but only as the asterisk
 user or else problems will occur!!
 
 # BUGS
