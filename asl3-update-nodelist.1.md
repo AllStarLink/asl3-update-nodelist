@@ -31,6 +31,11 @@ its behavior:
     is bypassed when the file is missing, older than 24 hours, or DNS
     probing fails.
 
+The command is normally executed using asl3-update-nodelist.timer
+from systemd, which the package installs but does not enable
+(**systemctl enable --now asl3-update-nodelist.timer**). It can be run by hand but only as the asterisk
+user or else problems will occur!!
+
 # ENVIRONMENT
 
 **BOTH_UPDATE_INTERVAL**
@@ -47,11 +52,6 @@ Environment=BOTH_UPDATE_INTERVAL=43200
 ```
 
 Do not edit `/usr/bin/asl3-update-nodelist` to change this value.
-
-The command is normally executed using asl3-update-nodelist.timer
-from systemd, which the package installs but does not enable
-(**systemctl enable --now asl3-update-nodelist.timer**). It can be run by hand but only as the asterisk
-user or else problems will occur!!
 
 # BUGS
 Report bugs to https://github.com/AllStarLink/asl3-update-nodelist/issues

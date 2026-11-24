@@ -117,6 +117,9 @@ EXTNODESTMP=$(mktemp)
 downloadNodelist
 if [ "${HTTP_CODE}" = "304" ]; then
 	#echo "${NODELIST} unchanged"
+	# Checked and current: restart the both-mode throttle window. Only rpt_extnodes; the stamp
+	# file's time is the server's Last-Modified, which -z depends on.
+	touch ${EXTNODES}
 	rm -f $EXTNODESTMP
 	exit 0
 fi
