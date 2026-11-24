@@ -4,8 +4,15 @@ located at `/var/lib/asterisk/rpt_extnodes`. This replaces,
 and conflicts with, the asl-update-node-list package for
 ASL2. Use one or the other, but not both.
 
-On installation of the package, the `asl3-update-nodelist.timer`
-is enabled and will update the database every 3 to 5 minutes.
+The package does not enable `asl3-update-nodelist.timer`. It is
+only needed when `node_lookup_method` in `/etc/asterisk/rpt.conf`
+is `file` (or `both`); with `dns` it has nothing to do. To use it:
+
+```bash
+systemctl enable --now asl3-update-nodelist.timer
+```
+
+Once enabled, it updates the database every 3 to 5 minutes.
 Each run downloads the list compressed, and only when it has
 changed since the last download.
 
