@@ -16,6 +16,37 @@ Once enabled, it updates the database every 3 to 5 minutes.
 Each run downloads the list compressed, and only when it has
 changed since the last download.
 
+### node_lookup_method behavior
+
+The updater reads `node_lookup_method` from `/etc/asterisk/rpt.conf`
+and adjusts its behavior accordingly:
+
+| Method | Behavior |
+|--------|----------|
+| `dns` | Skips updates; `rpt_extnodes` is not consulted by app_rpt |
+| `file` | Updates on every timer run |
+| `both` | Skips updates when DNS is healthy and `rpt_extnodes` was refreshed within the last 24 hours; updates when DNS is unavailable or the file is older than 24 hours |
+
+The throttle interval can be overridden with `BOTH_UPDATE_INTERVAL`
+(see `asl3-update-nodelist(1)`).
+
+## Customizing throttle settings
+
+When `node_lookup_method = both`, override `BOTH_UPDATE_INTERVAL` with:
+
+```bash
+systemctl edit asl3-update-nodelist.service
+```
+
+Add lines such as:
+
+```ini
+[Service]
+Environment=BOTH_UPDATE_INTERVAL=43200
+```
+
+Do not edit `/usr/bin/asl3-update-nodelist` to change this value.
+
 ## Resetting Database State
 To reset after a suspected database corruption:
 
