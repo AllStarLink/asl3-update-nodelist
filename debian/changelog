@@ -1,3 +1,11 @@
+asl3-update-nodelist (2.2.0-2) stable; urgency=medium
+
+  * Actually include the both-mode download throttle (#15), which
+    merged into the wrong branch and was missing from 2.2.0-1
+  * Depend on bind9-host for the DNS probe
+
+ -- Helium <jason@mfamily.org>  Tue, 24 Nov 2026 19:05:46 -0500
+
 asl3-update-nodelist (2.2.0-1) stable; urgency=medium
 
   * Change to curl to enable compression on downloaded files
